@@ -1,0 +1,208 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kishkinda University</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
+
+
+
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/static/logo-kis.png" alt="Logo" style="width: 40px;height: 40px;" />
+            <span>KISHKINDA UNIVERSITY</span>
+        </div>
+    </nav>
+
+
+    <div class="hero-section">
+        <div class="overlay">
+            <!-- <h2 class="subtitle">Aspire to Inspire @ KU</h2> -->
+            <h1 id="animated-heading" class="aspire-heading"></h1>
+
+
+            <!-- <p class="tagline">Student Friendly</p>
+      <p class="description">
+        University aspires to put the students at the forefront of development and through a student centric approach.
+      </p> -->
+        </div>
+    </div>
+
+    <div class="image-slider" id="imageSlider">
+        <div class="slide">
+            <img src="/static/3.png" alt="Career Research Center" />
+            <div class="slide-text">Career Research Center</div>
+        </div>
+        <div class="slide">
+            <img src="/static/card4.jpg" alt="Career Mentoring" />
+            <div class="slide-text">Career Mentoring</div>
+        </div>
+        <div class="slide">
+            <img src="/static/IMG_20231027_135618.jpg" alt="Industry Networking Sessions" />
+            <div class="slide-text">Industry Networking Sessions</div>
+        </div>
+        <div class="slide">
+            <img src="/static/IMG_20231027_152740.jpg" alt="Collaborative Learning" />
+            <div class="slide-text">Collaborative Learning</div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Chat Toggle -->
+    <div id="chat-toggle" onclick="toggleChat()">💬</div>
+
+    <!-- Chatbot Popup -->
+    <div id="chatbot-popup">
+        <div id="chat-header">
+            Kishkinda University Bot
+            <span id="close-chat" onclick="toggleChat()">×</span>
+        </div>
+
+        <div id="chatbox">
+            <!-- Initially empty -->
+
+        </div>
+
+
+        <div id="chat-input-area">
+            <input type="text" id="userInput" placeholder="Type your question...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-4 text-center text-white">
+        <div class="container">
+            <img src="/static/logo-kis.png" alt="KU Logo" width="50" class="mb-2">
+            <p class="mb-1">Hanumanahalli, Ballari District, Karnataka</p>
+            <p class="mb-1">Phone: +91-94490-86655 | Email: info@kishkindauniversity.edu.in</p>
+            <div class="social-icons mb-2">
+                <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="text-white me-3"><i class="bi bi-twitter-x"></i></a>
+            </div>
+            <small>© 2025 Kishkinda University. All rights reserved.</small>
+        </div>
+    </footer>
+
+
+
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
+
+            const chatbox = document.getElementById('chatbox');
+
+            const userMsg = document.createElement('div');
+            userMsg.className = 'bot-msg';
+            userMsg.style.background = '#d1e7dd';
+            userMsg.textContent = 'You asked: ' + userMessage;
+            chatbox.appendChild(userMsg);
+
+            input.value = '';
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            // AJAX call to Flask backend
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userMessage }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const reply = document.createElement('div');
+                    reply.className = 'bot-msg';
+                    reply.textContent = data.reply;
+                    chatbox.appendChild(reply);
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                })
+                .catch(err => {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'bot-msg';
+                    errorMsg.textContent = "Oops! Something went wrong.";
+                    chatbox.appendChild(errorMsg);
+                });
+        }
+        const text = "KISHKINDA UNIVERSITY";
+        const heading = document.getElementById("animated-heading");
+
+        let index = 0;
+        function animateText() {
+            if (index < text.length) {
+                const span = document.createElement("span");
+                span.textContent = text[index] === " " ? "\u00A0" : text[index]; // Handle space properly
+                span.style.animationDelay = `${index * 0.1}s`; // staggered timing
+                heading.appendChild(span);
+                index++;
+                setTimeout(animateText, 100);
+            }
+        }
+
+
+        animateText();
+        function scrollSlider(direction) {
+            const slider = document.getElementById("imageSlider");
+            const scrollAmount = 300; // Pixels to scroll per click
+
+            if (direction === -1) {
+                slider.scrollLeft -= scrollAmount;
+            } else {
+                slider.scrollLeft += scrollAmount;
+            }
+        }
+
+
+    function toggleChat() {
+    const chatbot = document.getElementById('chatbot-popup');
+    const chatbox = document.getElementById('chatbox');
+
+    if (chatbot.classList.contains('show')) {
+        chatbot.classList.remove('show');
+        setTimeout(() => {
+            chatbot.style.display = 'none';
+            // Optionally clear chat when closing:
+            // chatbox.innerHTML = ''; 
+        }, 300);
+    } else {
+        chatbot.style.display = 'flex';
+        setTimeout(() => {
+            chatbot.classList.add('show');
+        }, 10);
+
+        // ✅ Always clear previous chat and show fresh welcome
+        chatbox.innerHTML = '';
+
+        const welcomeMsg = document.createElement('div');
+        welcomeMsg.className = 'bot-msg';
+        welcomeMsg.textContent = "Hello! 👋 Welcome To Kishkinda University";
+        chatbox.appendChild(welcomeMsg);
+
+        chatbot.scrollTop = chatbot.scrollHeight;
+    }
+}
+
+
+        function quickAsk(text) {
+            document.getElementById('userInput').value = text;
+            sendMessage();
+        }
+
+
+    </script>
+
+</body>
